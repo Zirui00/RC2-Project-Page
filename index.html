@@ -115,7 +115,17 @@
                     <span class="icon">
                       <i class="fas fa-file-pdf"></i>
                     </span>
-                    <span>Paper (preprint)</span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+
+                <!-- Code link -->
+                <span class="link-block">
+                  <a class="external-link button is-normal is-rounded is-dark" style="pointer-events:none; opacity:0.75;">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code (coming soon)</span>
                   </a>
                 </span>
 
@@ -229,20 +239,20 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-              Multimodal Large Language Models (MLLMs) suffer from a fundamental
-              “modality gap,” contradicting themselves on visual versus text views of the
-              same content. This paper argues that this inconsistency is not a failure, but a
-              powerful resource for self-reward multimodal learning. Instead of relying on
-              flawed voting mechanisms that amplify systematic errors when the majority is
-              wrong, we introduce cross-modal cycle consistency as rewards (R-C2) to improve
-              multimodal reasoning. R-C2 performs backward inference from an answer to a
-              query, switches modalities, and performs forward inference to verify the answer’s
-              consistency. This cycle serves as a dense, label-free reward that guides the model
-              to resolve its own internal conflicts, while avoiding majority-is-wrong failures of
-              standard voting methods. On standard benchmarks, R-C2 mitigates
-              modality-specific biases and improves reasoning accuracy by up to 7.6 points.
-              Our results show that robust reasoning emerges not just from scaling data, but
-              from achieving a bidirectional understanding of the multimodal world.
+              Robust perception and reasoning requires consistency across sensory modalities.
+              Yet, current multimodal models often violate this principle, yielding contradictory
+              predictions for visual versus textual representations of the same concept. Rather
+              than masking these failures with standard voting mechanisms—which amplify
+              systematic biases—we demonstrate that cross-modal inconsistency provides a rich,
+              natural signal for learning. We introduce <span style=”font-variant: small-caps;”>R-C2</span>,
+              a reinforcement learning framework that resolves internal conflicts by enforcing
+              cross-modal cycle consistency. By requiring a model to perform backward inference,
+              switches modalities, and reliably reconstruct the answer via forward inference, we
+              establish a dense, label-free reward. This cyclic constraint forces the model to
+              autonomously align its representations. Optimizing for this structure mitigates
+              modality-specific errors and improves reasoning accuracy by up to 7.6 points. Our
+              results suggest that advanced reasoning emerges not just from scaling data, but
+              from enforcing a structurally consistent understanding of the world.
             </p>
           </div>
         </div>
