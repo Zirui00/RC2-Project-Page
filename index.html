@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="R-C2: Cross-Modal Cycle Consistency Rewards Improve Multimodal Reasoning">
+  <meta name="description" content="R-C2 introduces cross-modal cycle consistency rewards for multimodal large language models, turning modality conflicts into label-free reinforcement signals and improving visual–textual reasoning accuracy by up to 7.6 points.">
+  <meta name="keywords" content="multimodal reasoning, vision-language models, reinforcement learning, cycle consistency, R-C2, cross-modal rewards, self-supervised RL, modality gap">
+  <meta name="author" content="Zirui Zhang, Haoyu Dong, Kexin Pei, Chengzhi Mao">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="R-C2 Project Page">
+  <meta property="og:title" content="R-C2: Cross-Modal Cycle Consistency Rewards Improve Multimodal Reasoning"/>
+  <meta property="og:description" content="R-C2 introduces cross-modal cycle consistency rewards that transform modality conflicts into dense, label-free reinforcement signals, improving multimodal reasoning across benchmarks like ScienceQA, ChartQA, InfoVQA, MathVista, A-OKVQA, and VisualWebArena."/>
+  <meta property="og:url" content="https://R-C2-multimodal.github.io"/>
+  <meta property="og:image" content="static/images/R-C2_og_banner.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+  <!-- Twitter -->
+  <meta name="twitter:title" content="R-C2: Cross-Modal Cycle Consistency Rewards Improve Multimodal Reasoning">
+  <meta name="twitter:description" content="R-C2 uses cross-modal cycle consistency rewards to resolve contradictions between visual and textual views of the same content, yielding label-free RL improvements in multimodal reasoning.">
+  <meta name="twitter:image" content="static/images/R-C2_twitter_banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <title>R-C2: Cross-Modal Cycle Consistency Rewards Improve Multimodal Reasoning</title>
+  <link rel="icon" type="image/x-icon" href="static/images/ico.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+  <style>
+  .publication-authors .author-block strong {
+    color: #526db5;   /* 统一蓝灰色 */
+  }
+  .publication-authors a {
+    color: #526db5 !important;   /* 链接保持同样颜色 */
+    text-decoration: none;       /* 去掉下划线 */
+  }
+</style>
+</head>
+<body>
+
+  <!-- Hero: title + authors + links -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              R-C2: Cross-Modal Cycle Consistency Rewards Improve Multimodal Reasoning
+            </h1>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <strong>Zirui Zhang</strong><sup>1</sup>,
+              <span class="author-block">
+                <a href="https://kozmojor.github.io/haoyudong.github.io/" target="_blank" style="text-decoration:none; color:inherit;">
+                  <strong>Haoyu Dong</strong>
+                </a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://sites.google.com/site/kexinpeisite/" target="_blank" style="text-decoration:none; color:inherit;">
+                  <strong>Kexin Pei</strong>
+                </a><sup>3</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://chengzhi-mao.github.io/" target="_blank" style="text-decoration:none; color:inherit;">
+                  <strong>Chengzhi Mao</strong>
+                </a><sup>1</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Rutgers University</span>
+              <span class="author-block"><sup>2</sup>Columbia University</span>
+              <span class="author-block"><sup>3</sup>University of Chicago</span>
+            </div>
+
+            <div class="is-size-5 has-text-centered" style="margin-top: 0.5em;">
+              <a href="https://R-C2-cmlab.github.io/Cross-Modal-Cycle-Consistency-Rewards/"
+                class="publication-link"
+                target="_blank"
+                style="color:#d33682; font-weight:500;">
+                https://R-C2-cmlab.github.io/Cross-Modal-Cycle-Consistency-Rewards/
+              </a>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF link -->
+                <span class="link-block">
+                  <a href="static/papers/CVXX2026_Cycle_Consist_arxiv.pdf"
+                     target="_blank"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper (preprint)</span>
+                  </a>
+                </span>
+
+                <!-- ArXiv abstract link (optional) -->
+                <!--
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                -->
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Motivation figure (Fig. 1: modality gap) -->
+  <section class="hero teaser">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full">
+            <figure class="image">
+              <img
+                src="static/images/fig1_modality_gap.png"
+                alt="Modality gap example where screenshot and HTML views of the same webpage yield conflicting answers."
+                style="max-width:70%; height:auto; display:block; margin:0 auto;"
+              >
+              <figcaption
+                style="
+                  margin-top: 0.75rem;
+                  font-size: 1.15rem;
+                  line-height: 1.55;
+                  max-width: 820px;
+                  margin-left: auto;
+                  margin-right: auto;
+                  text-align: left;
+                  display: flex;
+                  align-items: center;
+                "
+              >
+                <!-- 左侧标签块 -->
+                <span
+                  style="
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center; 
+                    height: 50px;
+                    padding: 0 12px;
+                    background: #eeeef2;
+                    color: #2A3F66;
+                    border-radius: 2px;
+                    font-weight: 600;
+                    white-space: nowrap;
+                    margin-right: 14px;
+                  "
+                >
+                  Modality Gap
+                </span>
+
+                <!-- 右侧正文 -->
+                <span>
+                  Given the same webpage, an MLLM produces different answers when queried on the
+                  <span
+                    style="
+                      padding: 1px 6px;
+                      background: #e6e4f7;
+                      color: #3A4F6E;
+                      border-radius: 6px;
+                      display: inline-block;
+                    "
+                  >
+                    Screenshot
+                  </span>
+                  &nbsp;versus the&nbsp;
+                  <span
+                    style="
+                      padding: 1px 6px;
+                      background: #e6e4f7;
+                      color: #3A4F6E;
+                      border-radius: 6px;
+                      display: inline-block;
+                    "
+                  >
+                    HTML
+                  </span>
+                  &nbsp;view, motivating R-C2.
+                </span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Multimodal Large Language Models (MLLMs) suffer from a fundamental
+              “modality gap,” contradicting themselves on visual versus text views of the
+              same content. This paper argues that this inconsistency is not a failure, but a
+              powerful resource for self-reward multimodal learning. Instead of relying on
+              flawed voting mechanisms that amplify systematic errors when the majority is
+              wrong, we introduce cross-modal cycle consistency as rewards (R-C2) to improve
+              multimodal reasoning. R-C2 performs backward inference from an answer to a
+              query, switches modalities, and performs forward inference to verify the answer’s
+              consistency. This cycle serves as a dense, label-free reward that guides the model
+              to resolve its own internal conflicts, while avoiding majority-is-wrong failures of
+              standard voting methods. On standard benchmarks, R-C2 mitigates
+              modality-specific biases and improves reasoning accuracy by up to 7.6 points.
+              Our results show that robust reasoning emerges not just from scaling data, but
+              from achieving a bidirectional understanding of the multimodal world.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ONE-FIGURE-PER-SECTION SECTIONS START HERE ===== -->
+
+  <!-- Section: Failure of Majority Voting (Figure 2) -->
+  <section class="section hero is-small">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full">
+            <h2 class="title is-3 has-text-centered">When Majority Voting Breaks</h2>
+            <p class="subtitle is-5 has-text-centered"
+               style="max-width: 760px; margin: 0 auto 1.5rem;">
+              Cross-modal disagreements are common: the same input yields different answers
+              from the screenshot and the HTML view. Simple majority voting over these
+              inconsistent predictions can reinforce the wrong answer instead of correcting it.
+            </p>
+
+            <!-- card-style figure -->
+            <div class="card"
+                 style="border-radius:14px; box-shadow:0 12px 30px rgba(15,23,42,0.10); overflow:hidden;">
+              <div class="card-image" style="background: linear-gradient(135deg,#fee2e2,#fff7ed);">
+                <figure class="image"
+                        style="padding:0.5rem 0.5rem 0.25rem; max-width:960px; margin:0 auto;">
+                  <img src="static/images/fig2_voting_failure.png"
+                       alt="Failure of multimodal majority voting when image and text predictions are inconsistent."
+                       style="border-radius:10px;">
+                </figure>
+              </div>
+              <div class="card-content" style="padding:1.0rem 1.4rem 1.3rem;">
+                <p class="title is-5" style="margin-bottom:0.4rem;">
+                  Modality Gap and Majority Voting
+                </p>
+                <p class="content is-size-6" style="margin-bottom:0;">
+                  For the same webpage, screenshot and HTML views drive the MLLM to
+                  different answers. Aggregating image-only and text-only predictions by
+                  majority vote can still lock in the wrong label, especially when both
+                  modalities share a systematic bias—motivating consistency-based training
+                  instead of simple counting.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: R-C2 Framework Overview (Figure 3) -->
+  <section class="section hero is-small is-light">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full">
+            <h2 class="title is-3 has-text-centered">R-C2: Cross-Modal Cycle Consistency Rewards</h2>
+            <p class="subtitle is-5 has-text-centered"
+               style="max-width: 780px; margin: 0 auto 1.5rem;">
+              R-C2 turns cross-modal contradictions into rewards. From a candidate answer,
+              the model performs backward reasoning to synthesize queries and then runs
+              forward inference across text and image views, checking whether the cycle
+              returns to the original answer.
+            </p>
+
+            <!-- card-style figure -->
+            <div class="card"
+                 style="border-radius:14px; box-shadow:0 12px 30px rgba(15,23,42,0.10); overflow:hidden;">
+              <div class="card-image" style="background: linear-gradient(135deg,#e0ecff,#eef2ff);">
+                <figure class="image"
+                        style="padding:0.5rem 0.5rem 0.5rem; max-width:960px; margin:0 auto;">
+                  <img src="static/images/RC2_cycle_overview.png"
+                       alt="Overview of the R-C2 cross-modal cycle consistency framework."
+                       style="border-radius:10px;">
+                </figure>
+              </div>
+              <div class="card-content" style="padding:1.0rem 1.4rem 1.3rem;">
+                <p class="title is-5" style="margin-bottom:0.4rem;">
+                  Turning Cycles into Rewards
+                </p>
+                <p class="content is-size-6" style="margin-bottom:0;">
+                  Starting from a candidate answer, R-C2 runs answer-to-query backward
+                  inference in both text and image modalities, then closes four forward
+                  cycles: text→text, text→image, image→text, and image→image. Cycles
+                  that faithfully reconstruct the original answer are rewarded, while those
+                  that drift are penalized, providing dense label-free signals for GRPO
+                  training.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Backward Inference + VWA MC carousel -->
+  <section class="section is-small">
+    <div class="container is-max-desktop">
+
+      <h2 class="title is-3 has-text-centered">Answer-to-Query Backward Inference</h2>
+
+      <p class="subtitle is-5 has-text-centered"
+         style="max-width:760px; margin:0 auto 1.5rem;">
+        Backward inference asks the model to justify its own answer:
+        <em>“for this answer to be correct, what query must have been asked?”</em>
+        R-C2 applies this in both text and image views, together with our reconstructed
+        <strong>VisualWebArena multiple-choice dataset</strong>.
+      </p>
+
+      <div id="backward-carousel" class="carousel results-carousel">
+
+        <!-- Slide 1 -->
+        <div class="item">
+          <div class="card"
+               style="border-radius:14px; box-shadow:0 12px 30px rgba(15,23,42,0.10); overflow:hidden;">
+            <div class="card-image" style="background: linear-gradient(135deg,#ecebff,#f4f3ff);">
+              <figure class="image benchmark-figure"
+                      style="padding:1.25rem 1.25rem 0.75rem;">
+                <img src="static/images/fig4_backward_examples.png"
+                     alt="Backward inference examples"
+                     style="border-radius:10px;">
+              </figure>
+            </div>
+            <div class="card-content" style="padding:1.0rem 1.4rem 1.3rem;">
+              <p class="title is-5" style="margin-bottom:0.4rem;">
+                Backward Inference Across Domains
+              </p>
+              <p class="content is-size-6" style="margin-bottom:0;">
+                Across very different tasks, backward query generation reliably turns an
+                answer into the right kind of question—showing that R-C2 can extract
+                meaningful supervision anywhere the model makes a prediction.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="item">
+          <div class="card"
+               style="border-radius:14px; box-shadow:0 12px 30px rgba(15,23,42,0.10); overflow:hidden;">
+            <div class="card-image" style="background: linear-gradient(135deg,#ecebff,#f4f3ff);">
+              <figure class="image benchmark-figure"
+                      style="padding:1.25rem 1.25rem 0.75rem;">
+                <img src="static/images/fig_vwa_mc_examples.png"
+                     alt="VisualWebArena MC dataset examples"
+                     style="border-radius:10px;">
+              </figure>
+            </div>
+            <div class="card-content" style="padding:1.0rem 1.4rem 1.3rem;">
+              <p class="title is-5" style="margin-bottom:0.4rem;">
+                Dataset-Level Visualization
+              </p>
+              <p class="content is-size-6" style="margin-bottom:0;">
+                Examples from the reconstructed VisualWebArena multiple-choice dataset,
+                covering product classification, attribute queries, price reasoning, etc.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="has-text-centered is-size-7"
+         style="margin-top:0.9rem; color:#6b7280;">
+        Swipe horizontally, drag, or use the carousel arrows to browse backward-inference and dataset visualizations.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- Cross-Modal Case Studies Across Benchmarks -->
+  <section class="hero is-small is-light">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+
+        <h2 class="title is-3 has-text-centered">
+          Cross-Modal Case Studies Across Benchmarks
+        </h2>
+
+        <p class="subtitle is-5 has-text-centered"
+           style="max-width: 820px; margin: 0 auto 1.5rem;">
+          We evaluate R-C2 on six multimodal reasoning benchmarks and observe
+          consistent gains in both <span class="has-text-weight-semibold">accuracy</span>
+          and <span class="has-text-weight-semibold">cross-modal consistency</span>.
+          The carousel below summarizes quantitative improvements and
+          representative qualitative case studies.
+        </p>
+
+        <!-- 横向滑动 carousel：accuracy / consistency / case study -->
+        <div id="benchmarks-carousel" class="carousel results-carousel">
+
+          <!-- Slide 1: Accuracy table -->
+          <div class="item">
+            <div class="card"
+                 style="
+                   border-radius: 14px;
+                   box-shadow: 0 8px 30px rgba(15,23,42,0.10);
+                   overflow: hidden;
+                 ">
+              <div class="card-image"
+                   style="background: linear-gradient(135deg,#e0dcfa,#f3f4ff);">
+                <figure class="image benchmark-figure"
+                        style="padding: 1.25rem 1.25rem 0.75rem;">
+                  <img src="static/images/tab_accuracy_overview.png"
+                       alt="Overall accuracy of base model, voting baselines, and R-C2 across all benchmarks."
+                       style="border-radius: 10px;">
+                </figure>
+              </div>
+              <div class="card-content" style="padding: 1.0rem 1.4rem 1.3rem;">
+                <p class="title is-5" style="margin-bottom:0.4rem;">
+                  Accuracy Gains Over Baselines
+                </p>
+                <p class="content is-size-6" style="margin-bottom:0;">
+                  R-C2 improves accuracy on all six benchmarks compared to the
+                  base MLLM and multimodal voting. Improvements reach
+                  <strong>+7.6 points</strong> on the most challenging
+                  datasets, showing that resolving cross-modal contradictions
+                  translates directly into better task performance.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: Consistency table -->
+          <div class="item">
+            <div class="card"
+                 style="
+                   border-radius: 14px;
+                   box-shadow: 0 8px 30px rgba(15,23,42,0.10);
+                   overflow: hidden;
+                 ">
+              <div class="card-image"
+                   style="background: linear-gradient(135deg,#dbeafe,#eef2ff);">
+                <figure class="image benchmark-figure"
+                        style="padding: 1.25rem 1.25rem 0.75rem;">
+                  <img src="static/images/tab_consistency_overview.png"
+                       alt="Cross-modal agreement between screenshot and HTML views for different training methods."
+                       style="border-radius: 10px;">
+                </figure>
+              </div>
+              <div class="card-content" style="padding: 1.0rem 1.4rem 1.3rem;">
+                <p class="title is-5" style="margin-bottom:0.4rem;">
+                  Cross-Modal Consistency Improvements
+                </p>
+                <p class="content is-size-6" style="margin-bottom:0;">
+                  Beyond accuracy, R-C2 substantially increases agreement between
+                  <span class="has-text-weight-semibold">screenshot</span> and
+                  <span class="has-text-weight-semibold">HTML</span> views.
+                  Disagreement rates drop across all datasets, indicating that
+                  cycle-consistency rewards make the model’s visual and textual
+                  predictions more stable and aligned.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3: Qualitative case studies -->
+          <div class="item">
+            <div class="card"
+                 style="
+                   border-radius: 14px;
+                   box-shadow: 0 8px 30px rgba(15,23,42,0.10);
+                   overflow: hidden;
+                 ">
+              <div class="card-image"
+                   style="background: linear-gradient(135deg,#fef3c7,#e0f2fe);">
+                <figure class="image benchmark-figure"
+                        style="padding: 1rem 0rem 0.75rem;">
+                  <img src="static/images/fig_case_studies.png"
+                       alt="Qualitative examples comparing base model, voting, and R-C2 across multiple benchmarks."
+                       style="border-radius: 10px;">
+                </figure>
+              </div>
+              <div class="card-content" style="padding: 1.0rem 1.4rem 1.3rem;">
+                <p class="title is-5" style="margin-bottom:0.4rem;">
+                  Case Studies Across Benchmarks
+                </p>
+                <p class="content is-size-6" style="margin-bottom:0;">
+                  Qualitative examples from ScienceQA, ChartQA, DocVQA, InfoVQA,
+                  MathVista, and VisualWebArena show that when the base model or
+                  voting baselines are confused by modality-specific biases,
+                  R-C2 leverages backward–forward cycles to recover answers that
+                  are correct and cross-modally consistent.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <p class="has-text-centered is-size-7"
+           style="margin-top: 0.9rem; color:#6b7280;">
+          Swipe horizontally, drag, or use the carousel arrows to browse
+          quantitative and qualitative results.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Which Cycles Matter (Figure 6) -->
+  <section class="section hero is-small">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full">
+            <h2 class="title is-3 has-text-centered">Which Cycles Matter Most?</h2>
+            <p class="subtitle is-5 has-text-centered"
+               style="max-width: 780px; margin: 0 auto 1.5rem;">
+              R-C2 supports many combinations of backward and forward modalities.
+              Ablations reveal which paths contribute most to accuracy and
+              self-consistency.
+            </p>
+
+            <!-- card-style figure -->
+            <div class="card"
+                 style="border-radius:14px; box-shadow:0 12px 30px rgba(15,23,42,0.10); overflow:hidden;">
+              <div class="card-image" style="background: linear-gradient(135deg,#e5e7ff,#f9fafb);">
+                <figure class="image"
+                        style="padding:1.25rem 1.25rem 0.75rem; max-width:900px; margin:0 auto;">
+                  <img src="static/images/fig6_cycle_paths_heatmap.png"
+                       alt="Heatmaps showing the impact of different backward/forward cycle paths."
+                       style="border-radius:10px;">
+                </figure>
+              </div>
+              <div class="card-content" style="padding:1.0rem 1.4rem 1.3rem;">
+                <p class="title is-5" style="margin-bottom:0.4rem;">
+                  Impact of Different Cycle Paths
+                </p>
+                <p class="content is-size-6" style="margin-bottom:0;">
+                  The heatmaps compare accuracy and agreement when enabling
+                  different pairs of backward and forward modalities. Mixed
+                  cycles that traverse both text and image views consistently
+                  outperform single-modality cycles, confirming that explicitly
+                  enforcing cross-modal consistency is key to the gains of R-C2.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Training on Harder Inconsistencies (Figure 7) -->
+  <section class="section hero is-small is-light">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full">
+            <h2 class="title is-3 has-text-centered">Learning from Cross-Modal Conflicts</h2>
+            <p class="subtitle is-5 has-text-centered"
+               style="max-width: 780px; margin: 0 auto 1.5rem;">
+              Not all training examples are equally informative. Samples where
+              image and text views strongly disagree turn out to be the most
+              valuable for improving both accuracy and consistency.
+            </p>
+
+            <!-- card-style figure -->
+            <div class="card"
+                 style="border-radius:14px; box-shadow:0 12px 30px rgba(15,23,42,0.10); overflow:hidden;">
+              <div class="card-image" style="background: linear-gradient(135deg,#fef3c7,#fffbeb);">
+                <figure class="image"
+                        style="padding:1.25rem 1.25rem 0.75rem; max-width:900px; margin:0 auto;">
+                  <img src="static/images/fig7_inconsistency_curve.png"
+                       alt="Effect of training on increasingly inconsistent samples."
+                       style="border-radius:10px;">
+                </figure>
+              </div>
+              <div class="card-content" style="padding:1.0rem 1.4rem 1.3rem;">
+                <p class="title is-5" style="margin-bottom:0.4rem;">
+                  Training on Hard Inconsistencies
+                </p>
+                <p class="content is-size-6" style="margin-bottom:0;">
+                  As R-C2 focuses training on samples with larger cross-modal
+                  disagreement, both task accuracy and agreement between
+                  modalities improve. The hardest conflicts—where text and image
+                  most disagree—provide the strongest self-supervised signal for
+                  aligning multimodal reasoning.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ONE-FIGURE-PER-SECTION SECTIONS END HERE ===== -->
+
+  <!-- BibTeX -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{rc22025cross,
+  title   = {R-C2: Cross-Modal Cycle Consistency Rewards Improve Multimodal Reasoning},
+  author  = {Zirui Zhang, Haoyu Dong, Kexin Pei, Chengzhi Mao},
+  journal = {arXiv preprint},
+  year    = {2025}
+}</code></pre>
+    </div>
+  </section>
+
+<!-- Acknowledgements -->
+<section class="section" id="Acknowledgements">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Acknowledgements</h2>
+    <p style="font-size: 1.03rem; line-height: 1.55;">
+      This work used <span style="color:#1b365d; font-weight:600;">Purdue Anvil GPU</span> through allocation 
+      <span style="color:#1b365d; font-weight:600;">250774</span> from the
+      <span style="color:#1b365d; font-weight:600;">Advanced Cyberinfrastructure Coordination Ecosystem: Services &amp; Support (ACCESS)</span>
+      program, which is supported by the 
+      <span style="color:#1b365d; font-weight:600;">U.S. National Science Foundation</span> under grants 
+      <span style="color:#1b365d; font-weight:600;">2138259, 2138286, 2138307, 2137603, and 2138296</span>.
+      We thank <a href="https://guangxinghan.github.io/" target="_blank" style="font-weight:600; color:#1b365d; text-decoration:none;">Guangxing Han</a> for the insightful discussion.
+    </p>
+  </div>
+</section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This page was built using the
+              <a href="https://github.com/eliahuhorwitz/Academic-project-page-template"
+                 target="_blank">Academic Project Page Template</a>.
+              You are free to borrow the structure of this website; we just ask that you
+              link back to this page in the footer. <br>
+              This website is licensed under a
+              <a rel="license"
+                 href="https://creativecommons.org/licenses/by-sa/4.0/"
+                 target="_blank">
+                Creative Commons Attribution-ShareAlike 4.0 International License
+              </a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Optional analytics (Statcounter, replace or remove as needed) -->
+  <script type="text/javascript">
+    var sc_project = 12843789;
+    var sc_invisible = 1;
+    var sc_security = "e9c3bf5f";
+  </script>
+  <script type="text/javascript"
+          src="https://www.statcounter.com/counter/counter.js"
+          async></script>
+  <noscript>
+    <div class="statcounter">
+      <a title="Web Analytics"
+         href="https://statcounter.com/"
+         target="_blank">
+        <img class="statcounter"
+             src="https://c.statcounter.com/12843789/0/e9c3bf5f/1/"
+             alt="Web Analytics"
+             referrerPolicy="no-referrer-when-downgrade">
+      </a>
+    </div>
+  </noscript>
+
+</body>
+</html>
